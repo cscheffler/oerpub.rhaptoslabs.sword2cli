@@ -1,0 +1,5 @@
+Sword2CLI
+---------
+A collections of command line interface (CLI) clients using the SWORD
+version 2 library for Connexions (see oerpub.rhaptoslabs.sword2cnx) to
+push and pull content and metadata from a Rhaptos instance.
