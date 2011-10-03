@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<document xmlns="http://cnx.rice.edu/cnxml" xmlns:md="http://cnx.rice.edu/mdml/0.4" xmlns:bib="http://bibtexml.sf.net/" xmlns:q="http://cnx.rice.edu/qml/1.0" id="id1621761" module-id="m12345" cnxml-version="0.7">
+  <title>Translation test module</title>
+<metadata xmlns:md="http://cnx.rice.edu/mdml"
+          mdml-version="0.5">
+  <!-- WARNING! The 'metadata' section is read only. Do not edit below.
+       Changes to the metadata section in the source will not be saved. -->
+  <md:repository>http://50.57.120.10:8080/content</md:repository>
+  <md:content-url>http://50.57.120.10:8080/content/m10107/latest/</md:content-url>
+  <md:content-id>m10107</md:content-id>
+  <md:title>Translation test module</md:title>
+  <md:version>1.1</md:version>
+  <md:created>2011/09/28 14:24:13.826 Universal</md:created>
+  <md:revised>2011/09/29 12:32:53.879 Universal</md:revised>
+  <md:actors>
+    <md:person userid="user1">
+      <md:firstname>firstname1</md:firstname>
+      <md:surname>lastname1</md:surname>
+      <md:fullname>firstname1 lastname1</md:fullname>
+      <md:email>useremail1@localhost.net</md:email>
+    </md:person>
+  </md:actors>
+  <md:roles>
+    <md:role type="author">user1</md:role>
+    <md:role type="maintainer">user1</md:role>
+    <md:role type="licensor">user1</md:role>
+  </md:roles>
+  <md:license url="http://creativecommons.org/licenses/by/3.0/" />
+  <!-- For information on license requirements for use or modification, see license url in the
+       above <md:license> element.
+       For information on formatting required attribution, see the URL:
+         CONTENT_URL/content_info#cnx_cite_header
+       where CONTENT_URL is the value provided above in the <md:content-url> element.
+  -->
+  <md:derived-from url="http://50.57.120.10:8080/content/m10069/1.1/">
+  </md:derived-from>
+  <md:keywordlist>
+    <md:keyword>music</md:keyword>
+  </md:keywordlist>
+  <md:subjectlist>
+    <md:subject>Arts</md:subject>
+  </md:subjectlist>
+  <md:abstract>This is the English summary, soon to be translated through Google.</md:abstract>
+  <md:language>en</md:language>
+  <!-- WARNING! The 'metadata' section is read only. Do not edit above.
+       Changes to the metadata section in the source will not be saved. -->
+</metadata>
+
+<content>
+    <para id="id1616635">Development of the Professional Doctorate in Education Administration/Leadership</para>
+    <para id="id1616639">With the increasing scrutiny in the professional community of the Ed.D. (Eisenhart &amp; DeHaan, May, 2005; Levine, 2005; Shulman, Golde, Bueschel &amp; Garabedian, April, 2006; UCEA, AERA&amp;NCPEA, 2005), it is even more essential that those developing doctorates in Education Administration-Leadership, especially if such is the University’s first such degree, are clear about goals, rigorous in terms of standards and meet the respective constituencies to be served, including potential students, school districts, community colleges and participating faculty. </para>
+  </content>
+</document>

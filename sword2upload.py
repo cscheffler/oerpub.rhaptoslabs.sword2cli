@@ -81,10 +81,18 @@ if TEST:
         'oerdc:subject': ['Arts', 'Humanities'],
         'dcterms:subject': ['keyword 1','keyword 2','keyword 3'],
         'oerdc:analyticsCode': '',
-        #'dcterms:creator': username,       # Updating of roles
-        #'dcterms:rightsHolder': username,  # is still broken
-        #'oerdc:maintainer': username,      # through SWORD2
         'oerdc:descriptionOfChanges': 'Uploaded from external document importer.',
+    }
+
+    # Role metadata is treated slightly differently in that the user
+    # id for each role is provided in the oerdc:id attribute rather
+    # than the text of the tag.
+    roleMetadata = {
+        'dcterms:creator': username,
+        'oerdc:maintainer': 'admin',
+        'dcterms:rightsHolder': username,
+        'oerdc:translator': username,
+        'oerdc:editor': [username, 'admin'],
     }
 else:
     print "New document metadata:"
@@ -121,14 +129,16 @@ else:
     # Google Analytics code
     metadata['oerdc:analyticsCode'] = raw_input("  Google Analytics code: ").strip()
 
-    metadata['dcterms:creator'] = username
-    metadata['dcterms:rightsHolder'] = username
-    metadata['oerdc:maintainer'] = username
-    metadata['oerdc:descriptionOfChanges'] = 'Uploaded from external document importer.'
+    roleMetadata = {
+        'dcterms:creator': username,
+        'dcterms:rightsHolder': username,
+        'oerdc:maintainer': username,
+    }
+    print 'TODO: ask for additional account ids for contributors (authors, licensors, maintainers, translators, editors)'
+    #  o ask for additional account ids for contributors (authors,
+    #    licensors, maintainers, translators, editors)
 
-print 'TODO: ask for additional account ids for contributors (authors, licensors, maintainers, translators, editors)'
-#  o ask for additional account ids for contributors (authors,
-#    licensors, maintainers, translators, editors)
+    metadata['oerdc:descriptionOfChanges'] = 'Uploaded from external document importer.'
 
 # Build metadata entry object
 keys = metadata.keys()
@@ -136,6 +146,14 @@ for key in keys:
     if metadata[key] == '':
         del metadata[key]
 metadataEntry = sword2cnx.MetaData(metadata)
+# Add role tags
+for key, value in roleMetadata.iteritems():
+    if not isinstance(value, list):
+        value = [value]
+    for v in value:
+        v = v.strip()
+        if v != '':
+            metadataEntry.add_field(key, '', {'oerdc:id': v})
 
 print "Type of file to upload:"
 print " 1. Office document"
@@ -144,10 +162,10 @@ print " 3. Zip package"
 if TEST:
     if TEST_TYPE == "CNXML":
         uploadType = 2
-        uploadFilename = "test.cnxml"
+        uploadFilename = "test/test.cnxml"
     elif TEST_TYPE == "Office":
         uploadType = 1
-        uploadFilename = "test.odt"
+        uploadFilename = "test/test.odt"
 else:
     uploadType = int(raw_input("").strip())
     uploadFilename = raw_input("Path to the %s file: "%(["Office", "CNXML", "Zip"][uploadType-1]))
