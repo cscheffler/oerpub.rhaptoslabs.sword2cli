@@ -28,11 +28,13 @@ License along with Sword1Cnx.  If not, see <http://www.gnu.org/licenses/>.
 """
 from __future__ import division
 import sys
-import sword2cnx
+from oerpub.rhaptoslabs import sword2cnx
+from rhaptos.cnxmlutils import odt2cnxml
 from lxml import etree
 
 TEST = True
-TEST_TYPE = "CNXML" # "Office", "CNXML"
+TEST_TYPE = "Office" # "Office", "CNXML"
+TEST_OFFICE_FILE = "/home/carl/work/siyavula/office_to_cnxml/test_documents/st_johns_docs/ChemicalEquilibrium(FETClassNotes)V1.doc"
 
 # Get the user's credentials
 if TEST:
@@ -165,31 +167,31 @@ if TEST:
         uploadFilename = "test/test.cnxml"
     elif TEST_TYPE == "Office":
         uploadType = 1
-        uploadFilename = "test/test.odt"
+        uploadFilename = TEST_OFFICE_FILE
 else:
     uploadType = int(raw_input("").strip())
     uploadFilename = raw_input("Path to the %s file: "%(["Office", "CNXML", "Zip"][uploadType-1]))
 
-def office_to_cnxml(pathToOfficeFile):
+def escape_system(string):
+    return '"' + string.replace('\\', '\\\\').replace('"', '\\"') + '"'
+
+def office_to_cnxml(pathToOfficeFile, verbose=True):
     import os
 
-    inputFilename = pathToOfficeFile
-    outputFilename = pathToOfficeFile + '.xml'
+    # Get absolute path to file
+    inputFilename = os.path.abspath(pathToOfficeFile)
 
-    os.system("/home/carl/work/siyavula/office_to_cnxml/phil_converter/word-importer2/converter.sh " + os.path.abspath(pathToOfficeFile))
-    with open(outputFilename, 'rt') as fp:
-        cnxml = fp.read().decode('latin-1')
-    
-    files = {}
-    imageDir = '/tmp/phil/Pictures/'
-    imageFilenames = os.listdir(imageDir)
-    for filename in imageFilenames:
-        with open(imageDir + filename, 'rb') as fp:
-            files[filename] = fp.read()
+    # Convert to ODT if necessary
+    if inputFilename[inputFilename.rfind('.'):].lower() != '.odt':
+        odtFilename = '/tmp/temp.odt'
+        command = '/usr/bin/soffice "macro:///Standard.Module1.SaveAsOOO(' + escape_system(inputFilename)[1:-1] + ',' + odtFilename + ')"'
+        print command
+        os.system(command)
+        inputFilename = odtFilename
 
-    os.unlink(os.path.abspath(pathToOfficeFile) + '.xml')
-
-    return cnxml, files
+    # Convert to CNXML
+    xml, files, errors = odt2cnxml.transform(inputFilename)
+    return etree.tostring(xml), files
 
 
 if uploadType in [1, 2]:
