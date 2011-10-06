@@ -164,7 +164,7 @@ print " 3. Zip package"
 if TEST:
     if TEST_TYPE == "CNXML":
         uploadType = 2
-        uploadFilename = "test/test.cnxml"
+        uploadFilename = "../../../test/test.cnxml"
     elif TEST_TYPE == "Office":
         uploadType = 1
         uploadFilename = TEST_OFFICE_FILE
@@ -185,7 +185,6 @@ def office_to_cnxml(pathToOfficeFile, verbose=True):
     if inputFilename[inputFilename.rfind('.'):].lower() != '.odt':
         odtFilename = '/tmp/temp.odt'
         command = '/usr/bin/soffice "macro:///Standard.Module1.SaveAsOOO(' + escape_system(inputFilename)[1:-1] + ',' + odtFilename + ')"'
-        print command
         os.system(command)
         inputFilename = odtFilename
 
@@ -230,9 +229,7 @@ if preview:
     print "TODO: preview the module"
 
 # Upload module through SWORD2 API
-print 'TODO: Make multipart deposit work, rather than two separate deposits'
 print 'Uploading...'
-"""
 # POST a Multipart Deposit with Header In-Progress="true" (since the
 # license hasn't been signed) and an Atom Entry and an attached Zip
 # Document to Col-IRI. Set the Package to SimpleZip.
@@ -244,11 +241,9 @@ depositReceipt = conn.create(
     mimetype = 'application/zip',
     packaging = 'http://purl.org/net/sword/package/SimpleZip',
     in_progress = True)
-print "=== DEPOSIT RECEIPT ==="
-print depositReceipt
-print "=== /DEPOSIT RECEIPT ==="
-"""
 
+"""
+# Alternative non-multipart deposit.
 depositReceipt = conn.create(
     col_iri = swordCollections[collectionSelect].href,
     metadata_entry = metadataEntry,
@@ -260,6 +255,7 @@ conn.update_files_for_resource(
     packaging = 'http://purl.org/net/sword/package/SimpleZip',
     in_progress = True,
     dr = depositReceipt)
+"""
 
 zipFile.close()
 
