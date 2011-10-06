@@ -147,7 +147,16 @@ keys = metadata.keys()
 for key in keys:
     if metadata[key] == '':
         del metadata[key]
+
+# HACK to replace <oerdc:subject> with <dcterms:subject xsi:type="oerdc:Subject">
+# metadataEntry = sword2cnx.MetaData(metadata)
+subjectMetadata = metadata.get('oerdc:subject')
+if subjectMetadata is not None:
+    del metadata['oerdc:subject']
 metadataEntry = sword2cnx.MetaData(metadata)
+for subject in subjectMetadata:
+    metadataEntry.add_field('dcterms:subject', subject, attributes={'xsi:type': 'oerdc:Subject'})
+
 # Add role tags
 for key, value in roleMetadata.iteritems():
     if not isinstance(value, list):
