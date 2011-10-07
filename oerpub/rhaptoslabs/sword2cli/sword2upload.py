@@ -80,7 +80,7 @@ if TEST:
         'dcterms:title': 'Test %s upload'%TEST_TYPE,
         'dcterms:abstract': 'Test upload module summary',
         'dcterms:language': 'en',
-        'oerdc:subject': ['Arts', 'Humanities'],
+        'oerdc:oer-subject': ['Arts', 'Humanities'],
         'dcterms:subject': ['keyword 1','keyword 2','keyword 3'],
         'oerdc:analyticsCode': '',
         'oerdc:descriptionOfChanges': 'Uploaded from external document importer.',
@@ -113,14 +113,14 @@ else:
     print "  Add subjects from this list:"
     for i in range(len(subjects)):
         print "   %i. %s"%(i+1, subjects[i])
-    metadata['oerdc:subject'] = set([])
+    metadata['oerdc:oer-subject'] = set([])
     while True:
         index = raw_input("  ").strip()
         if index == '':
             break
         index = [int(_.strip())-1 for _ in index.split(',')]
-        metadata['oerdc:subject'].update(index)
-    metadata['oerdc:subject'] = [subjects[i] for i in metadata['oerdc:subject']]
+        metadata['oerdc:oer-subject'].update(index)
+    metadata['oerdc:oer-subject'] = [subjects[i] for i in metadata['oerdc:oer-subject']]
     # Keywords
     metadata['dcterms:subject'] = []
     while True:
@@ -147,15 +147,7 @@ keys = metadata.keys()
 for key in keys:
     if metadata[key] == '':
         del metadata[key]
-
-# HACK to replace <oerdc:subject> with <dcterms:subject xsi:type="oerdc:Subject">
-# metadataEntry = sword2cnx.MetaData(metadata)
-subjectMetadata = metadata.get('oerdc:subject')
-if subjectMetadata is not None:
-    del metadata['oerdc:subject']
 metadataEntry = sword2cnx.MetaData(metadata)
-for subject in subjectMetadata:
-    metadataEntry.add_field('dcterms:subject', subject, attributes={'xsi:type': 'oerdc:Subject'})
 
 # Add role tags
 for key, value in roleMetadata.iteritems():
