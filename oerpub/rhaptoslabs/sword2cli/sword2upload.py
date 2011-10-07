@@ -34,7 +34,8 @@ from lxml import etree
 
 TEST = True
 TEST_TYPE = "Office" # "Office", "CNXML"
-TEST_OFFICE_FILE = "../../../test/test.odt"
+TEST_OFFICE_FILE = "../../../test/test.doc"
+USE_MULTIPART = False
 
 # Get the user's credentials
 if TEST:
@@ -185,7 +186,7 @@ def office_to_cnxml(pathToOfficeFile, verbose=True):
     # Convert to ODT if necessary
     if inputFilename[inputFilename.rfind('.'):].lower() != '.odt':
         odtFilename = '/tmp/temp.odt'
-        command = '/usr/bin/soffice "macro:///Standard.Module1.SaveAsOOO(' + escape_system(inputFilename)[1:-1] + ',' + odtFilename + ')"'
+        command = '/usr/bin/soffice -headless -nologo -nofirststartwizard "macro:///Standard.Module1.SaveAsOOO(' + escape_system(inputFilename)[1:-1] + ',' + odtFilename + ')"'
         os.system(command)
         inputFilename = odtFilename
 
@@ -231,32 +232,31 @@ if preview:
 
 # Upload module through SWORD2 API
 print 'Uploading...'
-# POST a Multipart Deposit with Header In-Progress="true" (since the
-# license hasn't been signed) and an Atom Entry and an attached Zip
-# Document to Col-IRI. Set the Package to SimpleZip.
-depositReceipt = conn.create(
-    col_iri = swordCollections[collectionSelect].href,
-    metadata_entry = metadataEntry,
-    payload = zipFile,
-    filename = 'upload.zip',
-    mimetype = 'application/zip',
-    packaging = 'http://purl.org/net/sword/package/SimpleZip',
-    in_progress = True)
-
-"""
-# Alternative non-multipart deposit.
-depositReceipt = conn.create(
-    col_iri = swordCollections[collectionSelect].href,
-    metadata_entry = metadataEntry,
-    in_progress = True)
-conn.update_files_for_resource(
-    payload = zipFile,
-    filename = 'upload.zip',
-    mimetype = 'application/zip',
-    packaging = 'http://purl.org/net/sword/package/SimpleZip',
-    in_progress = True,
-    dr = depositReceipt)
-"""
+if USE_MULTIPART:
+    # POST a Multipart Deposit with Header In-Progress="true" (since the
+    # license hasn't been signed) and an Atom Entry and an attached Zip
+    # Document to Col-IRI. Set the Package to SimpleZip.
+    depositReceipt = conn.create(
+        col_iri = swordCollections[collectionSelect].href,
+        metadata_entry = metadataEntry,
+        payload = zipFile,
+        filename = 'upload.zip',
+        mimetype = 'application/zip',
+        packaging = 'http://purl.org/net/sword/package/SimpleZip',
+        in_progress = True)
+else:
+    # Alternative non-multipart deposit.
+    depositReceipt = conn.create(
+        col_iri = swordCollections[collectionSelect].href,
+        metadata_entry = metadataEntry,
+        in_progress = True)
+    conn.update_files_for_resource(
+        payload = zipFile,
+        filename = 'upload.zip',
+        mimetype = 'application/zip',
+        packaging = 'http://purl.org/net/sword/package/SimpleZip',
+        in_progress = True,
+        dr = depositReceipt)
 
 zipFile.close()
 
