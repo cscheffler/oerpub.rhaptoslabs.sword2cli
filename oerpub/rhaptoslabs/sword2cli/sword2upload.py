@@ -34,7 +34,7 @@ from lxml import etree
 
 TEST = True
 TEST_TYPE = "Office" # "Office", "CNXML"
-TEST_OFFICE_FILE = "/home/carl/work/siyavula/office_to_cnxml/test_documents/st_johns_docs/ChemicalEquilibrium(FETClassNotes)V1.doc"
+TEST_OFFICE_FILE = "../../../test/test.odt"
 
 # Get the user's credentials
 if TEST:
