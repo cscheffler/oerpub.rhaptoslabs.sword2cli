@@ -35,15 +35,16 @@ from lxml import etree
 TEST = True
 TEST_TYPE = "Office" # "Office", "CNXML"
 TEST_OFFICE_FILE = "../../../test/test.doc"
-USE_MULTIPART = False
+USE_MULTIPART = True
 
 # Get the user's credentials
 if TEST:
     username = 'user1'
     password = 'user1'
 else:
+    import getpass
     username = raw_input("Enter Connexions username: ")
-    password = raw_input("Enter Connexions password: ")
+    password = getpass.getpass("Enter Connexions password: ")
 
 # Retrieve service document
 serviceDocumentUrl = "http://50.57.120.10:8080/rhaptos/sword/servicedocument"
@@ -92,10 +93,10 @@ if TEST:
     # than the text of the tag.
     roleMetadata = {
         'dcterms:creator': username,
-        'oerdc:maintainer': 'admin',
+        'oerdc:maintainer': username,
         'dcterms:rightsHolder': username,
         'oerdc:translator': username,
-        'oerdc:editor': [username, 'admin'],
+        'oerdc:editor': [username, username],
     }
 else:
     print "New document metadata:"
@@ -281,3 +282,6 @@ raw_input("WAITING...")
 publishedDepositReceipt = conn.complete_deposit(dr = depositReceipt)
 
 print 'Done!'
+
+location = publishedDepositReceipt.response_headers['location']
+print 'TODO: Get module number from service document and provide link to published module. (and bug check the service document at location)'
